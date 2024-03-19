@@ -5,7 +5,14 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>Calvin</title>
+    <title>
+        <?php 
+            require "admin/includes/dbh.php";
+            $query = "SELECT * FROM blog_post";
+            $result = mysqli_query($conn, $query);
+            echo mysqli_num_rows($result); // should get 0 as the output there aren't any rows in blog_post yet
+        ?>
+    </title>
     <meta name="description" content="">
     <meta name="author" content="">
 
