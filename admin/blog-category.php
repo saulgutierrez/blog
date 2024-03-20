@@ -37,7 +37,7 @@
                 </div>
 
                     <?php
-                        // Checkung if there is an addcategory element in our code
+                        // Checking if give us a request to add a category
                         if (isset($_REQUEST['addcategory'])) {
                             if ($_REQUEST["addcategory"] == "success") {
                                 echo "<div class='alert alert-success'>
@@ -46,6 +46,28 @@
                             } else if ($_REQUEST["addcategory"] == "error") {
                                 echo "<div class='alert alert-danger'>
                                     <strong>Error!</strong> Category was not added, there was an unexpected error.
+                                </div>";
+                            }
+                        } else if (isset($_REQUEST['editcategory'])) {
+                            if ($_REQUEST["editcategory"] == "success") {
+                                echo "<div class='alert alert-success'>
+                                    <strong>Success!</strong> Changes were saved.
+                                </div>";
+                            } else if ($_REQUEST["editcategory"] == "error") {
+                                echo "<div class='alert alert-danger'>
+                                    <strong>Error!</strong> Changes were not saved, there was an unexpected error.
+                                </div>";
+                            }
+                        }
+
+                        else if (isset($_REQUEST['deletecategory'])) {
+                            if ($_REQUEST["deletecategory"] == "success") {
+                                echo "<div class='alert alert-success'>
+                                    <strong>Success!</strong> Category deleted.
+                                </div>";
+                            } else if ($_REQUEST["deletecategory"] == "error") {
+                                echo "<div class='alert alert-danger'>
+                                    <strong>Error!</strong> Category not deleted.
                                 </div>";
                             }
                         }
@@ -101,7 +123,7 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $counter = 0;
+                                                    $counter = 0; // Displaying all categories
                                                     while ($rowCategories = mysqli_fetch_assoc($queryCategories)) {
                                                         $counter++;
                                                         $id = $rowCategories['n_category_id'];
@@ -116,10 +138,64 @@
                                                     <td><?php echo $metaTitle;?></td>
                                                     <td><?php echo $categoryPath;?></td>
                                                     <td>
-                                                        <button>View</button>
-                                                        <button>Edit</button>
-                                                        <button>Delete</button>
+                                                        <!-- Redirect to unique path -->
+                                                        <button class="popup-button" onclick="window.open('../categories.php?group=<?php echo $categoryPath; ?>', '_blank');">View</button>
+                                                        <button data-toggle="modal" data-target="#edit<?php echo $id; ?>" class="popup-button">Edit</button>
+                                                        <button data-toggle="modal" data-target="#delete<?php echo $id; ?>" class="popup-button">Delete</button>
                                                     </td>
+                                                    <!-- Direct the edit button to its own specific popup -->
+                                                    <div class="modal fade" id="edit<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form method="POST" action="includes/edit-category.php">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        <h4 class="modal-title" id="myModalLabel">Edit Category</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <input type="hidden" name="category-id" value="<?php echo $id; ?>">
+                                                                        <div class="form-group">
+                                                                            <label>Name</label>
+                                                                            <input class="form-control" name="edit-category-name" value="<?php echo $name; ?>">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Meta Title</label>
+                                                                            <input class="form-control" name="edit-category-meta-title" value="<?php echo $metaTitle; ?>">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Category Path</label>
+                                                                            <input class="form-control" name="edit-category-path" value="<?php echo $categoryPath; ?>">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                        <button type="submit" class="btn btn-primary" name="edit-category-button">Save changes</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Direct the delete button to its own specific popup -->
+                                                    <div class="modal fade" id="delete<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form method="POST" action="includes/delete-category.php">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        <h4 class="modal-title" id="myModalLabel">Delete Category</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <input type="hidden" name="category-id" value="<?php echo $id; ?>">
+                                                                        <p>Are you sure that you want to delete this category?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                        <button type="submit" class="btn btn-primary" name="delete-category-button">Delete</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </tr>
 
                                                 <?php
