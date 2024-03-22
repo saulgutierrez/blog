@@ -1,3 +1,7 @@
+<?php
+    require "includes/dbh.php";
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -37,61 +41,73 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <form role="form">
+                                    <!-- Submit images and files-->
+                                    <form role="form" method="POST" action="includes/add-blog.php" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label>Title</label>
-                                            <input class="form-control">
+                                            <input class="form-control" name="blog-title">
                                         </div>
                                         <div class="form-group">
                                             <label>Meta Title</label>
-                                            <input class="form-control">
+                                            <input class="form-control" name="blog-meta-title">
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Category</label>
-                                            <select class="form-control">
-                                                <option>1</option>
+                                            <select class="form-control" name="blog-category">
+                                                <option value="">Select a category</option>
+                                                <?php
+                                                    $sqlCategories = "SELECT * FROM blog_category";
+                                                    $queryCategories = mysqli_query($conn, $sqlCategories);
+
+                                                    while($rowCategories = mysqli_fetch_assoc($queryCategories)) {
+                                                        $cId = $rowCategories['n_category_id'];
+                                                        $cName = $rowCategories['v_category_title'];
+
+                                                        echo "<option value='".$cId."'>".$cName."</option>";
+                                                    }
+                                                ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label>Main Image</label>
-                                            <input type="file">
+                                            <input type="file" name="main-blog-image">
                                         </div>
                                         <div class="form-group">
                                             <label>Alternate Image</label>
-                                            <input type="file">
+                                            <input type="file" name="alt-blog-image">
                                         </div>
                                         <div class="form-group">
                                             <label>Summary</label>
-                                            <textarea class="form-control" rows="3"></textarea>
+                                            <textarea class="form-control" rows="3" name="blog-summary"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Content</label>
-                                            <textarea class="form-control" rows="3"></textarea>
+                                            <textarea class="form-control" rows="3" name="blog-content"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Tags (separated by comma)</label>
-                                            <input class="form-control">
+                                            <input class="form-control" name="blog-tags">
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Path</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">www.myblog.com</span>
-                                                <input type="text" class="form-control" placeholder="">
+                                                <input type="text" class="form-control" placeholder="" name="blog-path">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label>Home Page Placement</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked="">1
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline1" value="option1" checked="">1
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">2
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline2" value="option2">2
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline3" value="option3">3
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline3" value="option3">3
                                             </label>
                                         </div>
-                                        <button type="submit" class="btn btn-default">Add Blog</button>
+                                        <button type="submit" class="btn btn-default" name="submit-blog">Add Blog</button>
                                     </form>
                                 </div>
                             </div>
