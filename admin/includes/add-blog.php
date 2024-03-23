@@ -62,8 +62,12 @@
             }
         }
 
-        $sqlAddBlog = "INSERT INTO blog_post (n_category_id, v_post_title, v_post_meta_title, v_post_path, v_post_summary, v_post_content,
-                        n_home_page_placement, f_post_status, d_date_created, d_time_created) VALUES ('$blogCategoryId', '$title', '$metaTitle', '$blogPath', '$blogSummary', '$blogContent', '$homePagePlacement', '1', '$date', '$time')";
+        // Getting the image input field and the image name
+        $mainImageUrl = uploadImage($_FILES["main-blog-image"]["name"], "main-blog-image", "main");
+        $altImageUrl = uploadImage($_FILES["alt-blog-image"]["name"], "alt-blog-image", "alt");
+
+        $sqlAddBlog = "INSERT INTO blog_post (n_category_id, v_post_title, v_post_meta_title, v_post_path, v_post_summary, v_post_content, v_main_image_url, v_alt_image_url,
+                        n_home_page_placement, f_post_status, d_date_created, d_time_created) VALUES ('$blogCategoryId', '$title', '$metaTitle', '$blogPath', '$blogSummary', '$blogContent', '$mainImageUrl', '$altImageUrl', '$homePagePlacement', '1', '$date', '$time')";
 
         if (mysqli_query($conn, $sqlAddBlog)) {
             mysqli_close($conn);
@@ -81,6 +85,35 @@
     function formError($errorCode) {
         header("Location: ../write-a-blog.php?addblog=".$errorCode);
         exit();
+    }
+
+    function uploadImage($img, $imgName, $imgType) {
+        $imgUrl = "";
+        $validExt = array("jpg", "png", "jpeg", "bmp", "gif");
+
+        // If there is not image attached, they we gonna say empty image
+        if ($img == "") {
+            formError("empty".$imgType."image");
+        } else if ($_FILES[$imgName]["size"] <= 0) {
+            formError($imgType."imageerror");
+        } else { // Imge is valid
+            $ext = strtolower(end(explode(".", $img))); // Get the extension of the image
+            if (!in_array($ext, $validExt)) {
+                formError("invalidtype".$imgType."image");
+            }
+
+            $folder = "../images/blog-images/"; // Folder where all the images will be saved
+            $imgNewName = rand(1000, 990000).'_'.time().'.'.$ext;
+            $imgPath = $folder.$imgNewName;
+
+            if (move_uploaded_file($_FILES[$imgName]['tmp_name'], $imgPath)) {
+                $imgUrl = "http://localhost/blog/admin/images/blog-images/".$imgNewName;
+            } else {
+                formError("erroruploading".$imgType."image");
+            }
+        }
+
+        return $imgUrl;
     }
 
 ?>
