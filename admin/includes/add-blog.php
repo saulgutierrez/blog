@@ -1,5 +1,6 @@
 <?php
     require "dbh.php";
+    session_start();
 
     if (isset($_POST['submit-blog'])) {
         $title = $_POST['blog-title'];
@@ -71,6 +72,16 @@
 
         if (mysqli_query($conn, $sqlAddBlog)) {
             mysqli_close($conn);
+
+            // Deleted sessions variable once our blog is added successfully
+            unset($_SESSION['blogTitle']);
+            unset($_SESSION['blogMetaTitle']);
+            unset($_SESSION['blogCategoryId']);
+            unset($_SESSION['blogContent']);
+            unset($_SESSION['blogTags']);
+            unset($_SESSION['blogPath']);
+            unset($_SESSION['blogHomePagePlacement']);
+
             header("Location: ../blogs.php?addblog=success");
             exit();
         } else {
@@ -83,6 +94,20 @@
     }
 
     function formError($errorCode) {
+
+        require "dbh.php";
+
+        // Storing is session variables for autocomplete when error occurs
+        $_SESSION['blogTitle'] = $_POST['blog-title'];
+        $_SESSION['blogMetaTitle'] = $_POST['blog-meta-title'];
+        $_SESSION['blogCategoryId'] = $_POST['blog-category'];
+        $_SESSION['blogSummary'] = $_POST['blog-summary'];
+        $_SESSION['blogContent'] = $_POST['blog-content'];
+        $_SESSION['blogTags'] = $_POST['blog-tags'];
+        $_SESSION['blogPath'] = $_POST['blog-path'];
+        $_SESSION['blogHomePagePlacement'] = $_POST['blog-home-page-placement'];
+
+        mysqli_close($conn);
         header("Location: ../write-a-blog.php?addblog=".$errorCode);
         exit();
     }

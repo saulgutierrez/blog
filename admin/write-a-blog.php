@@ -1,5 +1,6 @@
 <?php
     require "includes/dbh.php";
+    session_start();
 ?>
 
 <!DOCTYPE html>
@@ -30,8 +31,72 @@
                             Write a Blog
                         </h1>
                     </div>
-                </div> 
-                 <!-- /. ROW  -->
+                </div>
+
+                <?php
+
+                if (isset($_REQUEST['addblog'])) {
+                    if($_REQUEST['addblog'] == "emptytitle") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please add a blog title.</div>";
+                    }
+                    else if($_REQUEST['addblog'] == "emptycategory") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please select a blog category.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] == "emptysummary") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please enter a blog summary.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] == "emptycontent") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please add blog content.</div>";
+                    } 
+                    else if ($_REQUEST['addblog'] == "emptytags") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please add some blog tags.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] == "emptypath") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please add a blog path.</div>";
+                    }
+                    else if ($_REQUEST['addblog' == "sqlerror"]) {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please try again.</div>";
+                    }
+                    else if ($_REQUEST['addblog' == "pathcontainsspaces"]) {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please do not add any spaces in the blog path.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] == "emptymainimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please upload a main image.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] == "emptyaltimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please upload an alternate image</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "mainimageerror") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please upload another main image</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "altimageerror") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Please upload another alternate image</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "invalidtypemainimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Main image -> Upload only jpg, jpeg, png, gif, bmp images.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "invalidtypealtimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Alt image -> Upload only jpg, jpeg, png, gif, bmp images.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "erroruploadedmainimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Main image -> There was an error while uploading. Please try again later.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "erroruploadedaltimage") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>Alt image -> There was an error while uploading. Please try again later.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "titlebeingused") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>The title is being used in another blog. Try picking a different title.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "pathbeingused") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>The blog path is being used in another blog. Try picking a different bloh path.</div>";
+                    }
+                    else if ($_REQUEST['addblog'] = "homepageplacementerror") {
+                        echo "<div class='alert alert-danger'><strong>Error! </strong>An unexpected error occurred while try to set the homepage placement. Please try again</div>";
+                    }
+                }
+
+                ?>
+
               <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -45,11 +110,12 @@
                                     <form role="form" method="POST" action="includes/add-blog.php" enctype="multipart/form-data" onsubmit="return validateImage();">
                                         <div class="form-group">
                                             <label>Title</label>
-                                            <input class="form-control" name="blog-title">
+                                            <!-- Prefilled fields -->
+                                            <input class="form-control" name="blog-title" value="<?php if (isset($_SESSION['blogTitle'])) { echo $_SESSION['blogTitle'];}?>">
                                         </div>
                                         <div class="form-group">
                                             <label>Meta Title</label>
-                                            <input class="form-control" name="blog-meta-title">
+                                            <input class="form-control" name="blog-meta-title" value="<?php if (isset($_SESSION['blogMetaTitle'])) { echo $_SESSION['blogMetaTitle'];}?>">
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Category</label>
@@ -58,12 +124,21 @@
                                                 <?php
                                                     $sqlCategories = "SELECT * FROM blog_category";
                                                     $queryCategories = mysqli_query($conn, $sqlCategories);
-
+                                                    // Fetching all blog categories from database
                                                     while($rowCategories = mysqli_fetch_assoc($queryCategories)) {
                                                         $cId = $rowCategories['n_category_id'];
                                                         $cName = $rowCategories['v_category_title'];
 
-                                                        echo "<option value='".$cId."'>".$cName."</option>";
+                                                        if (isset($_SESSION['blogCategoryId'])) {
+                                                            // Put the previous category default selected
+                                                            if ($_SESSION['blogCategoryId'] == $cId) {
+                                                                echo "<option value='".$cId."' selected=''>".$cName."</option>";        
+                                                            } else {
+                                                                echo "<option value='".$cId."'>".$cName."</option>";
+                                                            }
+                                                        } else {
+                                                            echo "<option value='".$cId."'>".$cName."</option>";
+                                                        }
                                                     }
                                                 ?>
                                             </select>
@@ -78,33 +153,33 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Summary</label>
-                                            <textarea class="form-control" rows="3" name="blog-summary"></textarea>
+                                            <textarea class="form-control" rows="3" name="blog-summary"><?php if (isset($_SESSION['blogSummary'])) { echo $_SESSION['blogSummary'];}?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Content</label>
-                                            <textarea class="form-control" rows="3" name="blog-content"></textarea>
+                                            <textarea class="form-control" rows="3" name="blog-content"><?php if (isset($_SESSION['blogContent'])) { echo $_SESSION['blogContent'];}?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Tags (separated by comma)</label>
-                                            <input class="form-control" name="blog-tags">
+                                            <input class="form-control" name="blog-tags" value="<?php if (isset($_SESSION['blogTags'])) { echo $_SESSION['blogTags'];}?>">
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Path</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">www.myblog.com</span>
-                                                <input type="text" class="form-control" placeholder="" name="blog-path">
+                                                <input type="text" class="form-control" name="blog-path" value="<?php if (isset($_SESSION['blogPath'])) { echo $_SESSION['blogPath'];}?>">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label>Home Page Placement</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline1" value="option1" checked="">1
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline1" value="1" <?php if (isset($_SESSION['blogHomePagePlacement'])) { if($_SESSION['blogHomePagePlacement'] == 1) {echo "checked=''";} }?> >1
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline2" value="option2">2
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline2" value="2" <?php if (isset($_SESSION['blogHomePagePlacement'])) { if($_SESSION['blogHomePagePlacement'] == 2) {echo "checked=''";} }?> >2
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline3" value="option3">3
+                                                <input type="radio" name="blog-home-page-placement" id="optionsRadiosInline3" value="3" <?php if (isset($_SESSION['blogHomePagePlacement'])) { if($_SESSION['blogHomePagePlacement'] == 3) {echo "checked=''";} }?> >3
                                             </label>
                                         </div>
                                         <button type="submit" class="btn btn-default" name="submit-blog">Add Blog</button>
