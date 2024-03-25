@@ -77,6 +77,7 @@
             unset($_SESSION['blogTitle']);
             unset($_SESSION['blogMetaTitle']);
             unset($_SESSION['blogCategoryId']);
+            unset($_SESSION['blogSummary']);
             unset($_SESSION['blogContent']);
             unset($_SESSION['blogTags']);
             unset($_SESSION['blogPath']);

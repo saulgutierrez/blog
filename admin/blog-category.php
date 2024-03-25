@@ -139,7 +139,7 @@
                                                     <td><?php echo $categoryPath;?></td>
                                                     <td>
                                                         <!-- Redirect to unique path -->
-                                                        <button class="popup-button" onclick="window.open('../categories.php?group=<?php echo $categoryPath; ?>', '_blank');">View</button>
+                                                        <button class="popup-button" onclick="window.open('../category.php?group=<?php echo $categoryPath; ?>', '_blank');">View</button>
                                                         <button data-toggle="modal" data-target="#edit<?php echo $id; ?>" class="popup-button">Edit</button>
                                                         <button data-toggle="modal" data-target="#delete<?php echo $id; ?>" class="popup-button">Delete</button>
                                                     </td>
