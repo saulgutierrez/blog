@@ -154,7 +154,10 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <!-- Submit images and files-->
-                                    <form role="form" method="POST" action="includes/update-blog.php" enctype="multipart/form-data" onsubmit="return validateImage();">
+                                    <form role="form" method="POST" action="includes/update-blog.php" enctype="multipart/form-data">
+                                        <!-- We use id as a search key, to find the field we gonna want to change int to update-blog file -->
+                                        <!-- And send it as a hidden value -->
+                                        <input type="hidden" name="blog-id" value="<?php echo $blogId; ?>">
                                         <div class="form-group">
                                             <label>Title</label>
                                             <!-- Prefilled fields -->
@@ -316,58 +319,6 @@
     <!-- Metis Menu Js -->
     <script src="assets/js/jquery.metisMenu.js"></script>
       <!-- Custom Js -->
-    <script src="assets/js/custom-scripts.js"></script>
-
-    <script>
-        function validateImage() {
-            var main_img = $("#main-blog-image").val();
-            var alt_img = $("#alt-blog-image").val();
-
-            var exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-            // Getting the extension of the image
-            var get_ext_main_img = main_img.split('.');
-            var get_ext_alt_img = alt_img.split('.');
-
-            get_ext_main_img = get_ext_main_img.reverse();
-            get_ext_alt_img = get_ext_alt_img.reverse();
-
-            main_image_check = false;
-            alt_image_check = false;
-
-            // If user enter an image, were checking its extension is inside the extension list
-            if (main_img.length > 0) {
-                if ($.inArray(get_ext_main_img[0].toLowerCase(), exts) >= -1) {
-                    main_image_check = true;
-                } else {
-                    alert("Error -> Main Image upload only jpg, jpeg, png, gif, bnp images.");
-                    main_img_check = false;
-                }
-            } else {
-                alert("Please upload a main image");
-                main_img_check = false;
-            }
-
-            if (alt_img.length > 0) {
-                if ($.inArray(get_ext_alt_img[0].toLowerCase(), exts) >= -1) {
-                    alt_image_check = true;
-                } else {
-                    alert("Error -> Alternate Image upload only jpg, jpeg, png, gif, bnp images.");
-                    alt_image_check = false;
-                }
-            } else {
-                alert("Please upload a alternate image");
-                alt_image_check = false;
-            }
-
-            if (main_image_check == true && alt_img_check == true) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-    </script>
-    
-   
+    <script src="assets/js/custom-scripts.js"></script>   
 </body>
 </html>

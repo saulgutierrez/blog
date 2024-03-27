@@ -45,6 +45,14 @@
                         }
                     }
 
+                    if (isset($_REQUEST['updateblog'])) {
+                        if ($_REQUEST['updateblog'] == "success") {
+                            echo "<div class='alert alert-success'>
+                                    <strong>Success!</strong> Blog Saved!
+                                </div>";
+                        }
+                    }
+
                     if (isset($_REQUEST['deleteblogpost'])) {
                         if ($_REQUEST['deleteblogpost'] == "success") {
                             echo "<div class='alert alert-success'>
