@@ -71,20 +71,28 @@
                         n_home_page_placement, f_post_status, d_date_created, d_time_created) VALUES ('$blogCategoryId', '$title', '$metaTitle', '$blogPath', '$blogSummary', '$blogContent', '$mainImageUrl', '$altImageUrl', '$homePagePlacement', '1', '$date', '$time')";
 
         if (mysqli_query($conn, $sqlAddBlog)) {
-            mysqli_close($conn);
 
-            // Deleted sessions variable once our blog is added successfully
-            unset($_SESSION['blogTitle']);
-            unset($_SESSION['blogMetaTitle']);
-            unset($_SESSION['blogCategoryId']);
-            unset($_SESSION['blogSummary']);
-            unset($_SESSION['blogContent']);
-            unset($_SESSION['blogTags']);
-            unset($_SESSION['blogPath']);
-            unset($_SESSION['blogHomePagePlacement']);
+            // Link two tables using blog_id into the tag table, to store all tags used
+            $blogPostId = mysqli_insert_id($conn); // Return the latest id that was inserted
+            $sqlAddTags = "INSERT INTO blog_tags (n_blog_post_id, v_tag) VALUES ('$blogPostId', '$blogTags')";
 
-            header("Location: ../blogs.php?addblog=success");
-            exit();
+            if (mysqli_query($conn, $sqlAddTags)) {
+                mysqli_close($conn);
+                // Deleted sessions variable once our blog is added successfully
+                unset($_SESSION['blogTitle']);
+                unset($_SESSION['blogMetaTitle']);
+                unset($_SESSION['blogCategoryId']);
+                unset($_SESSION['blogSummary']);
+                unset($_SESSION['blogContent']);
+                unset($_SESSION['blogTags']);
+                unset($_SESSION['blogPath']);
+                unset($_SESSION['blogHomePagePlacement']);
+
+                header("Location: ../blogs.php?addblog=success");
+                exit();
+            } else  {
+                formError("sqlerror");
+            }
         } else {
             formError("sqlerror");
         }

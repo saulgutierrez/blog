@@ -1,5 +1,7 @@
 <?php
     require "includes/dbh.php";
+    include "includes/unset-sessions.php";
+
     $sqlCategories = "SELECT * FROM blog_category"; // Fetch data from database
     $queryCategories = mysqli_query($conn, $sqlCategories);  // Execute task using connection
     $numCategories = mysqli_num_rows($queryCategories); // Take total_rows of the query

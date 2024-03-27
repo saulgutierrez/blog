@@ -99,7 +99,10 @@
             d_time_updated = '$time' WHERE n_blog_post_id = '$blogId'";
         }
 
-        if (mysqli_query($conn, $sqlUpdateBlog)) {
+        $sqlUpdateBlogTags = "UPDATE blog_tags SET v_tag = '$blogTags' WHERE n_blog_post_id = '$blogId'";
+
+
+        if (mysqli_query($conn, $sqlUpdateBlog) && mysqli_query($conn, $sqlUpdateBlogTags)) {
             formSuccess();
         } else {
             formError("sqlerror");
