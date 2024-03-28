@@ -1,3 +1,7 @@
+<?php
+    require "admin/includes/dbh.php";
+?>
+
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
@@ -49,88 +53,117 @@
 
         <div class="s-hero__slider">
 
+            <?php
+                // We are selecting our blog post table and rejoining that with blog category, and rejoining that by id and category_id on both sides,
+                // finding the row where n_home_page_placement is 1. The limit is 1 because only want one result
+                $sqlGetFirstBlog = "SELECT * FROM blog_post INNER JOIN blog_category ON blog_post.n_category_id = blog_category.n_category_id WHERE n_home_page_placement = '1' AND f_post_status != '2' LIMIT 1";
+                $queryGetFirstBlog = mysqli_query($conn, $sqlGetFirstBlog);
+
+                if ($rowGetFirstBlog = mysqli_fetch_assoc($queryGetFirstBlog)) {
+                    $firstBlogCategory = $rowGetFirstBlog['v_category_title'];
+                    $firstBlogCategoryPath = $rowGetFirstBlog['v_category_path'];
+                    $firstBlogTitle = $rowGetFirstBlog['v_post_title'];
+                    $firstBlogPath = $rowGetFirstBlog['v_post_path'];
+                    $firstBlogMainImageUrl = $rowGetFirstBlog['v_main_image_url'];
+
+            ?>
+                <div class="s-hero__slide">
+                    <div class="s-hero__slide-bg" style="background-image: url('<?php echo $firstBlogMainImageUrl;?>');"></div>
+                    <div class="row s-hero__slide-content animate-this">
+                        <div class="column">
+                            <div class="s-hero__slide-meta">
+                                <span class="cat-links">
+                                    <a href="categories.php?group=<?php echo $firstBlogCategoryPath; ?>"><?php echo $firstBlogCategory; ?></a>
+                                </span>
+                                <span class="byline"> 
+                                    Posted by 
+                                    <span class="author">
+                                        <a href="#">Saul Gutierrez</a>
+                                    </span>
+                                </span>
+                            </div>
+                            <h1 class="s-hero__slide-text">
+                                <a href="single-blog.php?blog=<?php echo $firstBlogPath; ?>"><?php echo $firstBlogTitle; ?></a>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            <?php
+                }
+
+                $sqlGetSecondBlog = "SELECT * FROM blog_post INNER JOIN blog_category ON blog_post.n_category_id = blog_category.n_category_id WHERE n_home_page_placement = '2' AND f_post_status != '2' LIMIT 1";
+                $queryGetSecondBlog = mysqli_query($conn, $sqlGetSecondBlog);
+
+                if ($rowGetSecondBlog = mysqli_fetch_assoc($queryGetSecondBlog)) {
+                    $secondBlogCategory = $rowGetSecondBlog['v_category_title'];
+                    $secondBlogCategoryPath = $rowGetSecondBlog['v_category_path'];
+                    $secondBlogTitle = $rowGetSecondBlog['v_post_title'];
+                    $secondBlogPath = $rowGetSecondBlog['v_post_path'];
+                    $secondBlogMainImageUrl = $rowGetSecondBlog['v_main_image_url'];
+            ?>
+
             <div class="s-hero__slide">
-
-                <div class="s-hero__slide-bg" style="background-image: url('images/slide1-bg-3000.jpg');"></div>
-
+                <div class="s-hero__slide-bg" style="background-image: url('<?php echo $secondBlogMainImageUrl;?>');"></div>
                 <div class="row s-hero__slide-content animate-this">
                     <div class="column">
                         <div class="s-hero__slide-meta">
                             <span class="cat-links">
-                                <a href="#0">Lifestyle</a>
-                                <a href="#0">Design</a>
+                                <a href="categories.php?group=<?php echo $secondBlogCategoryPath; ?>"><?php echo $secondBlogCategory; ?></a>
                             </span>
                             <span class="byline"> 
                                 Posted by 
                                 <span class="author">
-                                    <a href="#0">Jonathan Doe</a>
+                                    <a href="#0">Saul Gutierrez</a>
                                 </span>
                             </span>
                         </div>
                         <h1 class="s-hero__slide-text">
-                            <a href="#0">
-                                Tips and Ideas to Help You Start Freelancing.
-                            </a>
+                            <a href="single-blog.php?blog=<?php echo $secondBlogPath; ?>"><?php echo $secondBlogTitle; ?></a>
                         </h1>
                     </div>
                 </div>
 
-            </div> <!-- end s-hero__slide -->
+            </div>
+
+            <?php
+                }
+
+                $sqlGetThirdBlog = "SELECT * FROM blog_post INNER JOIN blog_category ON blog_post.n_category_id = blog_category.n_category_id WHERE n_home_page_placement = '3' AND f_post_status != '2' LIMIT 1";
+                $queryGetThirdBlog = mysqli_query($conn, $sqlGetThirdBlog);
+
+                if ($rowGetThirdBlog = mysqli_fetch_assoc($queryGetThirdBlog)) {
+                    $thirdBlogCategory = $rowGetThirdBlog['v_category_title'];
+                    $thirdBlogCategoryPath = $rowGetThirdBlog['v_category_path'];
+                    $thirdBlogTitle = $rowGetThirdBlog['v_post_title'];
+                    $thirdBlogPath = $rowGetThirdBlog['v_post_path'];
+                    $thirdBlogMainImageUrl = $rowGetThirdBlog['v_main_image_url'];
+            ?>
 
             <div class="s-hero__slide">
-
-                <div class="s-hero__slide-bg" style="background-image: url('images/slide2-bg-3000.jpg');"></div>
-
+                <div class="s-hero__slide-bg" style="background-image: url('<?php echo $thirdBlogMainImageUrl;?>');"></div>
                 <div class="row s-hero__slide-content animate-this">
                     <div class="column">
                         <div class="s-hero__slide-meta">
                             <span class="cat-links">
-                                <a href="#0">Work</a>
+                                <a href="categories.php?group=<?php echo $thirdBlogCategoryPath; ?>"><?php echo $thirdBlogCategory; ?></a>
                             </span>
                             <span class="byline"> 
                                 Posted by 
                                 <span class="author">
-                                    <a href="#0">Juan Dela Cruz</a>
+                                    <a href="#0">Saul Gutierrez</a>
                                 </span>
                             </span>
                         </div>
                         <h1 class="s-hero__slide-text">
                             <a href="#0">
-                                Minimalism: The Art of Keeping It Simple.
+                                <a href="single-blog.php?blog=<?php echo $thirdBlogPath; ?>"><?php echo $thirdBlogTitle; ?></a>
                             </a>
                         </h1>
                     </div>
                 </div>
-
             </div> <!-- end s-hero__slide -->
 
-            <div class="s-hero__slide"">
-
-                <div class="s-hero__slide-bg" style="background-image: url('images/slide3-bg-3000.jpg');"></div>
-
-                <div class="row s-hero__slide-content animate-this">
-                    <div class="column">
-                        <div class="s-hero__slide-meta">
-                            <span class="cat-links">
-                                <a href="#0">Health</a>
-                                <a href="#0">Lifestyle</a>
-                            </span>
-                            <span class="byline"> 
-                                Posted by 
-                                <span class="author">
-                                    <a href="#0">Jane Doe</a>
-                                </span>
-                            </span>
-                        </div>
-                        <h1 class="s-hero__slide-text">
-                            <a href="#0">
-                                10 Reasons Why Being in Nature Is Good For You.
-                            </a>
-                        </h1>
-                    </div>
-                </div>
-
-            </div> <!-- end s-hero__slide -->
+            <?php } ?>
 
         </div> <!-- end s-hero__slider -->
 

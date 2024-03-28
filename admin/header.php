@@ -6,6 +6,6 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.php">Saul's Blog</a>
+        <a class="navbar-brand" href="../index.php" target="_blank">Saul's Blog</a>
     </div>
 </nav>

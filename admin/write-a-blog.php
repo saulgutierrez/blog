@@ -17,6 +17,8 @@
     <link href="assets/css/custom-styles.css" rel="stylesheet" />
      <!-- Google Fonts-->
    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+   <!-- Summernote -->
+   <link href='summernote/summernote.min.css' rel='stylesheet' type='text/css' />
 </head>
 <body>
     <div id="wrapper">
@@ -157,7 +159,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Content</label>
-                                            <textarea class="form-control" rows="3" name="blog-content"><?php if (isset($_SESSION['blogContent'])) { echo $_SESSION['blogContent'];}?></textarea>
+                                            <textarea class="form-control" rows="3" name="blog-content" id="summernote"><?php if (isset($_SESSION['blogContent'])) { echo $_SESSION['blogContent'];}?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Blog Tags (separated by comma)</label>
@@ -211,6 +213,19 @@
     <script src="assets/js/jquery.metisMenu.js"></script>
       <!-- Custom Js -->
     <script src="assets/js/custom-scripts.js"></script>
+      <!-- Summernote -->
+    <script src="summernote/summernote.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            height: 300,
+            minHeight: null,
+            maxHeight: null,
+            focus: false
+        });
+    });       
+    </script>
 
     <script>
         function validateImage() {
