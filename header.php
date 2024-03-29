@@ -1,3 +1,9 @@
+<?php
+    $sqlCategories = "SELECT * FROM blog_category";
+    $queryCategories = mysqli_query($conn, $sqlCategories);
+?>
+
+
 <!-- header
 ================================================== -->
 <header class="s-header">
@@ -19,7 +25,14 @@
                 <li class="has-children">
                     <a href="#0" title="">Categories</a>
                     <ul class="sub-menu">
-                        <li><a href="category.php"></a></li>
+                        <?php
+                            while ($rowCategories = mysqli_fetch_assoc($queryCategories)) {
+                                $categoryName = $rowCategories['v_category_title'];
+                                $categoryPath = $rowCategories['v_category_path'];
+
+                                echo "<li><a href='categories.php?group=".$categoryPath."'>".$categoryName."</a></li>";
+                            }
+                        ?>
                     </ul>
                 </li>
                 <li><a href="about.php" title="">About</a></li>
