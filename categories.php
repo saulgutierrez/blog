@@ -1,5 +1,21 @@
 <?php
     require "admin/includes/dbh.php";
+
+    if (isset($_REQUEST['group'])) {
+        // Getting path
+        $categoryPath = $_REQUEST['group'];
+
+        $sqlGetCategory = "SELECT * FROM blog_category WHERE v_category_path = '$categoryPath'";
+        $queryGetCategory = mysqli_query($conn, $sqlGetCategory);
+
+        if ($rowGetCategory = mysqli_fetch_assoc($queryGetCategory)) {
+            $categoryId = $rowGetCategory['n_category_id'];
+            $categoryTitle = $rowGetCategory['v_category_title'];
+            $categoryMetaTitle = $rowGetCategory['v_category_meta_title'];
+        } else {
+            header('Location: index.php');
+            exit();
+        }
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +25,7 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>Category - Calvin</title>
+    <title>Saul's Blog | <?php echo $categoryMetaTitle; ?></title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -59,7 +75,7 @@
                 <div class="column large-12">
                     <h1 class="page-title">
                         <span class="page-title__small-type">Category</span>
-                        Lifestyle
+                        <?php echo $categoryTitle; ?>
                     </h1>
                 </div>
             </div>
@@ -81,422 +97,51 @@
                         <span></span>
                     </div>
 
+                    <?php
+                        // Fiter all the blogs by a particular category
+                        $sqlGetAllBlogs = "SELECT * FROM blog_post WHERE n_category_id = '$categoryId' AND  f_post_status = '1' ORDER BY n_blog_post_id DESC";
+                        $queryGetAllBlogs = mysqli_query($conn, $sqlGetAllBlogs);
+
+                        while ($rowGetAllBlogs = mysqli_fetch_assoc($queryGetAllBlogs)) {
+                            $blogTitle = $rowGetAllBlogs['v_post_title'];
+                            $blogPath = $rowGetAllBlogs['v_post_path'];
+                            $blogSummary = $rowGetAllBlogs['v_post_summary'];
+                            $blogAltImageURL = $rowGetAllBlogs['v_alt_image_url'];
+                    ?>
+
                     <article class="brick entry" data-aos="fade-up">
     
                         <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/macbook-600.jpg" 
-                                     srcset="images/thumbs/masonry/macbook-600.jpg 1x, images/thumbs/masonry/macbook-1200.jpg 2x" alt="">
+                            <a href="single-blog.php?blog=<?php echo $blogPath;?>" class="thumb-link">
+                                <img src="<?php echo $blogAltImageURL;?>" 
+                                     srcset="<?php echo $blogAltImageURL;?> 1x, <?php echo $blogAltImageURL;?> 2x" alt="">
                             </a>
                         </div> <!-- end entry__thumb -->
     
                         <div class="entry__text">
                             <div class="entry__header">
-                                <h1 class="entry__title"><a href="https://www.dreamhost.com/r.cgi?287326">Need Web Hosting for Your Websites?</a></h1>
+                                <h1 class="entry__title"><a href="single-blog.php?blog=<?php echo $blogPath;?>"><?php echo $blogTitle; ?></a></h1>
                                 
                                 <div class="entry__meta">
                                     <span class="byline"">By:
                                         <span class='author'>
-                                            <a href="https://www.dreamhost.com/r.cgi?287326">StyleShout</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="https://www.dreamhost.com/r.cgi?287326">Site Partner</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Need hosting? We would highly recommend DreamHost.
-                                Enjoy 100% in-house support, guaranteed performance and uptime, 1-click installs, and a super-intuitive control panel to make managing your websites and projects easy.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="https://www.dreamhost.com/r.cgi?287326">Learn More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-
-                    <article class="brick entry" data-aos="fade-up">
-        
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/woodcraft-600.jpg" 
-                                     srcset="images/thumbs/masonry/woodcraft-600.jpg 1x, images/thumbs/masonry/woodcraft-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-        
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">Just a Normal Simple Blog Post.</a></h1>
-        
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Naruto Uzumaki</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Design</a> 
-                                        <a href="#">Photography</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-        
-                    </article> <!-- end entry -->
-    
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/tulips-600.jpg" 
-                                     srcset="images/thumbs/masonry/tulips-600.jpg 1x, images/thumbs/masonry/tulips-1200.jpg 2x" alt="">
-                            </a>
-                        </div>  <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">10 Interesting Facts About Caffeine.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Shikamaru Nara</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Health</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-
-                    <article class="brick entry" data-aos="fade-up">
-        
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/grayscale-600.jpg" 
-                                     srcset="images/thumbs/masonry/grayscale-600.jpg 1x, images/thumbs/masonry/grayscale-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-        
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">5  Grayscale Coloring Techniques.</a></h1>
-
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Susuke Uchiha</a>
+                                            <a href="#">Saul Gutierrez</a>
                                         </span>
                                     </span>
-                                    <span class="cat-links">
-                                        <a href="#">Design</a>
-                                    </span>
                                 </div>
                             </div>
                             <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
+                                <p><?php echo $blogSummary;?></p>
                             </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                        
-                    </article> <!-- end article -->
-
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/walk-600.jpg" 
-                                     srcset="images/thumbs/masonry/walk-600.jpg 1x, images/thumbs/masonry/walk-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">Using Repetition and Patterns in Photography.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Naruto Uzumaki</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Work</a> 
-                                        <a href="#">Lifestyle</a>
-                                    </span>
-                                </div>
-                                
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-    
-                    <article class="brick entry" data-aos="fade-up">
-            
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/jump-600.jpg" 
-                                     srcset="images/thumbs/masonry/jump-600.jpg 1x, images/thumbs/masonry/jump-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-            
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">Create Meaningful Family Moments.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Naruto Uzumaki</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Family</a>
-                                        <a href="#">Relationship</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                            
-                    </article> <!-- end article -->
-    
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/real-600.jpg" 
-                                     srcset="images/thumbs/masonry/real-600.jpg 1x, images/thumbs/masonry/real-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">How We Live Is What Makes Us Real.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Naruto Uzumaki</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Travel</a> 
-                                        <a href="#">Vacation</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-    
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/lamp-600.jpg" 
-                                     srcset="images/thumbs/masonry/lamp-600.jpg 1x, images/thumbs/masonry/lamp-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">Symmetry In Modern Design.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Kakakshi Hatake</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Design</a> 
-                                        <a href="#">Photography</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
+                            <a class="entry__more-link" href="single-blog.php?blog=<?php echo $blogPath;?>">Read Blog</a>
                         </div> <!-- end entry__text -->
                     
                     </article> <!-- end article -->
 
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/clock-600.jpg" 
-                                     srcset="images/thumbs/masonry/clock-600.jpg 1x, images/thumbs/masonry/clock-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">10 Tips for Managing Time Effectively.</a></h1>
-    
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">John Doe</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Lifestyle</a>
-                                        <a href="#">Work</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
 
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/beetle-600.jpg" 
-                                     srcset="images/thumbs/masonry/beetle-600.jpg 1x, images/thumbs/masonry/beetle-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">Throwback To The Good Old Days.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Sakura Haruno</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Lifestyle</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/phone-and-keyboard-600.jpg" 
-                                     srcset="images/thumbs/masonry/phone-and-keyboard-600.jpg 1x, images/thumbs/masonry/phone-and-keyboard-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">3 Reasons to Keep Your Workplace Tidy.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Sakura Haruno</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Work</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
-
-                    <article class="brick entry" data-aos="fade-up">
-    
-                        <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
-                                <img src="images/thumbs/masonry/seashore-600.jpg" 
-                                     srcset="images/thumbs/masonry/seashore-600.jpg 1x, images/thumbs/masonry/seashore-1200.jpg 2x" alt="">
-                            </a>
-                        </div> <!-- end entry__thumb -->
-    
-                        <div class="entry__text">
-                            <div class="entry__header">
-                                <h1 class="entry__title"><a href="single-standard.html">What The Beach Does to Your Brain.</a></h1>
-                                
-                                <div class="entry__meta">
-                                    <span class="byline"">By:
-                                        <span class='author'>
-                                            <a href="#0">Naruto Uzumaki</a>
-                                    </span>
-                                </span>
-                                    <span class="cat-links">
-                                        <a href="#">Health</a> 
-                                        <a href="#">Vacation</a>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                Lorem ipsum Sed eiusmod esse aliqua sed incididunt aliqua incididunt mollit id et sit proident dolor nulla sed commodo est ad minim elit reprehenderit nisi officia aute incididunt velit sint in aliqua cillum in consequat consequat in culpa in anim.
-                                </p>
-                            </div>
-                            <a class="entry__more-link" href="#0">Read More</a>
-                        </div> <!-- end entry__text -->
-                    
-                    </article> <!-- end article -->
+                    <?php
+                        }
+                    ?>
 
                 </div> <!-- end brick-wrapper -->
 
@@ -543,3 +188,9 @@
 </body>
 
 </html>
+
+<?php
+    } else {
+        header('Location: index.php');
+    }
+?>
