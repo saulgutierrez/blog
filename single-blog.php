@@ -218,7 +218,7 @@
                     <h3><?php echo $numComments; ?> Comments</h3>
 
                     <!-- START commentlist -->
-                    <ol class="commentlist">
+                    <ol class="commentlist" id="commentList">
 
                         <?php
 
@@ -326,28 +326,23 @@
                     <span>Your email address will not be published.</span>
                     </h3>
 
-                    <form name="contactForm" id="contactForm" method="post" action="" autocomplete="off">
-                        <fieldset>
+                    <p style="color: green; display: none;" id="comment-success">Your comment was added successfully.</p>
+                    <p style="color: red; display: none;" id="comment-error"></p>
 
+                    <form name="commentForm" id="commentForm">
+                        <fieldset>
+                            <input type="hidden" name="blogPostId" id="blogPostId" value="<?php echo $blogPostId; ?>">
                             <div class="form-field">
                                 <input name="cName" id="cName" class="h-full-width h-remove-bottom" placeholder="Your Name" value="" type="text">
                             </div>
-
                             <div class="form-field">
                                 <input name="cEmail" id="cEmail" class="h-full-width h-remove-bottom" placeholder="Your Email" value="" type="text">
                             </div>
-
-                            <div class="form-field">
-                                <input name="cWebsite" id="cWebsite" class="h-full-width h-remove-bottom" placeholder="Website" value="" type="text">
-                            </div>
-
                             <div class="message form-field">
                                 <textarea name="cMessage" id="cMessage" class="h-full-width" placeholder="Your Message"></textarea>
                             </div>
-
                             <br>
-                            <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large h-full-width" value="Add Comment" type="submit">
-
+                            <input name="submit" id="submitCommentForm" class="btn btn--primary btn-wide btn--large h-full-width" value="Add Comment" type="submit">
                         </fieldset>
                     </form> <!-- end form -->
 
@@ -366,8 +361,79 @@
     <!-- Java Script
     ================================================== -->
     <script src="js/jquery-3.5.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0/min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            prepareComment();
+        });
+
+        function checkEmail(email) {
+            var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!regex.test(email)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function prepareComment() {
+            $("#comment-success").css("display", "none");
+            $("#comment-error").css("display", "none");
+            $("#reply-comment-section").hide();
+            $("#add-comment-section").show();
+        }
+
+        $(document).on('submit', '#commentForm', function (e) {
+            e.preventDefault();
+            $("#comment-success").css("display", "none");
+            $("#comment-error").css("display", "none");
+
+            var name = $("#cName").val();
+            var email = $("#cEmail").val();
+            var comment = $("#cMessage").val();
+
+            if (!name || !email || !comment) {
+                $("#comment-error").css("display", "block");
+                $("#comment-error").html("Please fill all fields");
+            } else if (name.length > 50) {
+                $("#comment-error").css("display", "block");
+                $("#comment-error").html("The name input field can only be a max of 50 characters");
+            } else if (email.length > 50) {
+                $("#comment-error").css("display", "block");
+                $("#comment-error").html("The email input field can only be a max of 50 characters");
+            } else if (comment.length > 500) {
+                $("#comment-error").css("display", "block");
+                $("#comment-error").html("The comment input field can only be a max of 500 characters");
+            } else if (checkEmail(email) == false) {
+                $("#comment-error").css("display", "block");
+                $("#comment-error").html("Please enter a valid email adress");
+            } else {
+                var date = new Date();
+                var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+                var dateFormatted = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
+
+                $.ajax({
+                    method:     "POST",
+                    url:        "admin/includes/add-comment.php",
+                    data:       $(this).serialize(),
+                    success:    function (data) {
+                        if (data == "success") {
+                            var newComment = "<li class='depth-1 comment'><div class='comment__content'><div class='comment__info'><div class='comment__author'>"  + name + "</div><div class='comment__meta'><div class='comment__time'>" + dateFormatted + "</div></div></div><div class='comment__text'><p>"+ comment +"</p></div></div></li>";
+                            $("#comment-success").css("display", "block");
+                            $("#commentList").append(newComment);
+                            $("#commentForm").hide();
+                        } else {
+                            $("#comment-error").css("display", "block");
+                            $("#comment-error").html("There was an error while adding your comment. Please try again later");
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 
