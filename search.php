@@ -6,7 +6,7 @@
         $searchQuery = $_REQUEST['query'];
 
         // Joining blog_post table and blog_tags table to checking if tags or post title are something similar to the search query
-        $sqlGetSearchResults = "SELECT * FROM blog_tags INNER JOIN blog_post ON blog_tags.n_blog_post_id = blog_post.n_blog_post_id WHERE blog_tags.v_tag LIKE '%" . $searchQuery . "%' OR blog_post.v_post_title LIKE '%" .$searchQuery . "%'";
+        $sqlGetSearchResults = "SELECT * FROM blog_tags INNER JOIN blog_post ON blog_tags.n_blog_post_id = blog_post.n_blog_post_id WHERE blog_post.f_post_status = '1' AND blog_tags.v_tag LIKE '%" . $searchQuery . "%' OR blog_post.v_post_title LIKE '%" .$searchQuery . "%'";
         $queryGetSearchResults = mysqli_query($conn, $sqlGetSearchResults);
 ?>
 
